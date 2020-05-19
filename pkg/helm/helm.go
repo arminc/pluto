@@ -28,10 +28,11 @@ import (
 
 // Helm represents all current releases that we can find in the cluster
 type Helm struct {
-	Releases []*Release
-	Outputs  []*api.Output
-	Version  string
-	Kube     *kube
+	Releases  []*Release
+	Outputs   []*api.Output
+	Version   string
+	Kube      *kube
+	Namespace string
 }
 
 type Release struct {
@@ -50,10 +51,11 @@ type ChartMeta struct {
 }
 
 // NewHelm returns a basic helm struct with the version of helm requested
-func NewHelm(version string) *Helm {
+func NewHelm(version string, ns string) *Helm {
 	return &Helm{
-		Version: version,
-		Kube:    getConfigInstance(),
+		Version:   version,
+		Namespace: ns,
+		Kube:      getConfigInstance(),
 	}
 }
 
@@ -108,7 +110,8 @@ func (h *Helm) getReleasesVersionThree() error {
 	if h.Version != "3" {
 		return fmt.Errorf("helm 3 function called without helm 3 version set")
 	}
-	hs := driverv3.NewSecrets(h.Kube.Client.CoreV1().Secrets(""))
+	fmt.Println(h.Namespace)
+	hs := driverv3.NewSecrets(h.Kube.Client.CoreV1().Secrets(h.Namespace))
 	helmClient := helmstoragev3.Init(hs)
 	list, err := helmClient.ListDeployed()
 	if err != nil {
