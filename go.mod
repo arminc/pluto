@@ -22,4 +22,5 @@ require (
 	k8s.io/helm v2.16.5+incompatible // indirect
 	k8s.io/klog v1.0.0
 	sigs.k8s.io/controller-runtime v0.5.2
+	golang.org/x/sys v0.0.0-20200428200454-593003d681fa
 )
